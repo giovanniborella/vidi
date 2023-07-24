@@ -39,7 +39,7 @@ module.exports = {
         var curUrl = window.location.href, newUrl = curUrl.split("#")[0];
         if (window.confirm(__(`Do you really want to reset the map?`))) {
             state.resetState().then(() => {
-                // Do nothing
+                document.cookie = 'connect.gc2=; Max-Age=0; path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             });
         }
     }
