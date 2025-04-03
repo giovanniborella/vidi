@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Sphinx-Auto Task",
+            "type": "process",
+            "request": "launch",
+            "preLaunchTask": "Sphinx-Auto Task",
+            "program": "echo", // dummy program
+            "args": [ "Task started" ],
+            "console": "integratedTerminal"
+        }
+    ]
+}
