@@ -124,6 +124,8 @@ class MarkupGenerator {
                                                                        <span class="js-layer-filter-is-reqiered info-icon" style="display: ${filterIsRequired ? 'inline': 'none'}" data-toggle="tooltip" data-bs-placement="right"
                                                                        title="${__("Filter is required for showing data")}"><i class="bi-exclamation-triangle-fill text-warning"></i></span>
                                                                        <span style="display: none" class="_gc2_layer_sort_id">(${layer.sort_id})</span>
+                                                                       <span class="js-tiles-has-filter info-icon" style="display: none"};" data-toggle="tooltip" data-placement="right"
+                                                                       title="${__("Layer has filter")}"><i class="bi bi-filter text-success"></i></span>
                                                                        </div>
                                                                        </div>
                                                                        </div>
