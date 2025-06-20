@@ -41,6 +41,7 @@ var alreadySetFromState = false;
 var setState = true;
 var paramsFromDb;
 let scaleFromForm = false;
+let min_scale = scales.length > 0 ? Math.min(...scales) : 200;
 
 import dayjs from 'dayjs';
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -121,7 +122,7 @@ module.exports = {
                 $("#download-pdf, #open-pdf").attr("href", "/tmp/print/png/" + response.key + ".zip");
             }
             $("#download-pdf").attr("download", response.key);
-            $("#open-html").attr("href", response.url);
+            $("#open-html").attr("href", response.uri + '&html=true');
             $("#start-print-btn").find("span").hide();
             $(".dropdown-toggle.start-print-btn").prop("disabled", false);
             // GeoEnviron
@@ -375,12 +376,21 @@ module.exports = {
                 }
                 scale = scales[scaleIndex];
             }
-            var centerM = geocloud.transformPoint(initCenter.lng, initCenter.lat, "EPSG:4326", "EPSG:32632");
+
+            var centerM = geocloud.transformPoint(initCenter.lng, initCenter.lat, "EPSG:4326", "EPSG:3857");
             var printSizeM = [(ps[0] * scale / 1000), (ps[1] * scale / 1000)];
-            var printSwM = [centerM.x - (printSizeM[0] / 2), centerM.y - (printSizeM[1] / 2)];
-            var printNeM = [centerM.x + (printSizeM[0] / 2), centerM.y + (printSizeM[1] / 2)];
-            var printSwG = geocloud.transformPoint(printSwM[0], printSwM[1], "EPSG:32632", "EPSG:4326");
-            var printNeG = geocloud.transformPoint(printNeM[0], printNeM[1], "EPSG:32632", "EPSG:4326");
+
+            const correctionFactor = 1 / Math.cos(initCenter.lat * Math.PI / 180);
+            const adjustedWidth = printSizeM[0] * correctionFactor;
+            const adjustedHeight = printSizeM[1] * correctionFactor;
+            const halfWidth = adjustedWidth / 2;
+            const halfHeight = adjustedHeight / 2;
+
+            var printSwM = [centerM.x - halfWidth, centerM.y - halfHeight];
+            var printNeM = [centerM.x + halfWidth, centerM.y + halfHeight];
+            var printSwG = geocloud.transformPoint(printSwM[0], printSwM[1], "EPSG:3857", "EPSG:4326");
+            var printNeG = geocloud.transformPoint(printNeM[0], printNeM[1], "EPSG:3857", "EPSG:4326");
+
             var rectangle = L.rectangle([[printSwG.y, printSwG.x], [printNeG.y, printNeG.x]], {
                 color: color,
                 fillOpacity: 0,
@@ -460,8 +470,8 @@ module.exports = {
 
         var layerQueryDraw = [], layerQueryResult = [], layerQueryBuffer = [], layerPrint = [], e, parr,
             configFile = null;
-        if (scale && (isNaN(scale) || scale < 200)) {
-            alert(__("Not a valid scale. Must be over 200."));
+        if (scale && (isNaN(scale) || scale < min_scale)) {
+            alert(__("Not a valid scale. Must be over ") + min_scale + ".");
             return false;
         }
         backboneEvents.get().trigger("start:print");

@@ -5,6 +5,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [CalVer](https://calver.org/).
 
+## [2025.6.1] - 2025-4-6
+
+### Changed
+
+- The JavaScript libs are now loaded in sync, because the app had to poll for them anyway. This doesn't change performance and the Chrome [violation] regarding setTimeout is gone.
+
+### Fixed
+
+- Removed redundant console traces and improved error handling in multiple modules. Added safeguards for modal initialization to prevent runtime issues when the login modal is unavailable.
+
+
+## [2025.6.0] - 2025-2-6
+
+### Added
+
+- A `tileMatrixTransform` function can now be passed to WMTS layers. The function takes the current zoom number and must return a valid tilematrix. The example will pad the zoom number with `0` and prefix with `L`. If the `tileMatrixTransform` is not set, the zoom number will be used directly for tilematrix.
+```json
+{
+  "type": "WMTS",
+  "url": "https://api.dataforsyningen.dk/wmts/forvaltning2?",
+  "tileMatrixSet": "View1",
+  "layer": "forvaltning2",
+  "id": "forvaltning2",
+  "name": "Forvaltning2 (UTM)",
+  "tileMatrixTransform": "(zoom) => {return 'L' + zoom.padStart(2, '0').toString()}"
+}
+```
+
+## Fixed
+- In print the EPSG:32632 projection is replaced with EPSG:3857 for consistency and improved accuracy. Introduced a correction factor to adjust for latitude distortions in dimensions. Refactored related calculations to ensure proper map scaling and alignment.
+
+## [2025.5.2] - 2025-20-5
+
+### Added
+
+- Implemented a feature to copy extra tables to the clipboard as HTML, making it compatible with Excel formatting. Added animations to indicate successful copying and updated table rendering to include copy buttons.
+- Add callback handling for symbol changes. This ensures external systems can respond to changes via the `symbolIsChanged` event and corresponding embed API callbacks.
+
+## [2025.5.1] - 2025-13-5
+
+### Changed
+ 
+- Adjust file upload limits in FileUploadWidget.js
+
+## [2025.5.0] - 2025-6-5
+
+### Added
+
+- A new config `print.timeout` controls the timeout of the headless browser. Defaults to `60000` which equals the previously hardcoded value.
+
+### Changed
+
+- The minimum scale available for print has been changed from a fixed `200` to the lowest value of `config.print.scales`.
+
+### Fixed
+
+- Multipage print in conflictSearch now works.
+
 ## [2025.4.1] - 2025-24-4
 
 ### Fixed
