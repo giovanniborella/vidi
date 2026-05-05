@@ -247,6 +247,8 @@ module.exports = {
         "Filter is required for showing data": "Filter is required for showing data",
         "More tools": "More tools",
         "Change layer type": "Change layer type",
+        "Creating download file": "Creating download file",
+        "File was downloaded": "File was downloaded",
 
         // Base layers
         "Side-by-side mode": "Side-by-side mode",

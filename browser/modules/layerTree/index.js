@@ -3875,8 +3875,7 @@ module.exports = {
     },
     onApplyDownloadHandler: (layerKey, format) => {
         let whereClause = _self.getActiveLayerFilters(layerKey)[0];
-        let sql = `SELECT *
-                   FROM ${layerKey}`
+        let sql = `SELECT * FROM ${layerKey}`
         if (whereClause) {
             sql += ` WHERE ${whereClause}`;
         }

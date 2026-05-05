@@ -6,19 +6,45 @@
 
 'use strict';
 
+import utils from './utils';
+
 /**
  *
  */
 
+const onError = function (request) {
+    utils.hideInfoToast()
+    request.response.text().then(
+        e => {
+            utils.hideInfoToast()
+            utils.showDangerToast(JSON.parse(e).message, {delay: 5000, autohide: true})
+        }
+    );
+}
+
 module.exports = {
     download: (sql, format, db, fileName) => {
         fileName = fileName || 'file';
+        utils.showInfoToast(`<div class="d-flex">
+                                    <div>${__('Creating download file')}</div>
+                                    <div class="spinner-border spinner-border-sm ms-2" role="status"></div>
+                                  </div>`,
+            {delay: 1500, autohide: false});
         let request = new XMLHttpRequest();
-        request.open('POST', '/api/sql/' + db, true);
+        request.open('POST', '/api/sql/nocache/' + db, true);
+        request.setRequestHeader('Accept', 'application/json');
         request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
         request.responseType = 'blob';
+        request.onerror = function () {
+            onError(request);
+        }
         request.onload = function () {
             if (request.status === 200) {
+                utils.showInfoToast(`<div class="d-flex">
+                                            <div>${__('File was downloaded')}</div>
+                                            <div class="bi bi-check ms-2" role="status"></div>
+                                            </div>`
+                    , {delay: 2000, autohide: true})
                 let filename, type;
                 switch (format) {
                     case "csv":
@@ -46,9 +72,8 @@ module.exports = {
                 link.click();
                 document.body.removeChild(link);
             } else {
-                request.response.text().then(e => alert(JSON.parse(e).message.join("\n")));
+                onError(request);
             }
-            // some error handling should be done here...
         };
 
         let data = {
