@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [CalVer](https://calver.org/).
 
+## [2026.5.2] - 2026-8-5
+### Changed
+- Refactor Editor schema handling: replace `enum` with `oneOf` for restriction fields, preserve parent type, and improve select rendering.
+
 ## [2026.5.1] - 2026-5-5
 ### Fixed
 - Add support for danger toasts and fixed layertree download functionality with improved error handling and localized messages.
