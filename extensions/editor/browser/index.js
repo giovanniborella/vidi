@@ -483,27 +483,30 @@ module.exports = {
 
                 // Properties have priority over default types
                 if (fields[key]?.restriction?.length > 0) {
-                    // if the type is text, change the field to string to get a select
-                    if (fields[key].type === `text`) {
-                        properties[key].type = `string`;
+                    // Use oneOf with const/title (rjsf v6 idiom) instead of enum + ui:enumNames
+                    // so each option carries its own value/label and the parent schema's type
+                    // (integer/number/string) is preserved.
+                    properties[key].oneOf = fields[key].restriction.map(r => ({
+                        const: r.value,
+                        title: r.alias
+                    }));
+                    // Drop any widget hint set by the type switch above (e.g. textarea) so the
+                    // restricted field renders as a select.
+                    if (uiSchema[key]?.['ui:widget']) {
+                        delete uiSchema[key]['ui:widget'];
                     }
-                    let restrictions = fields[key].restriction;
-                    let enumNames = [];
-                    let enumValues = [];
-                    for (let i = 0; i < restrictions.length; i++) {
-                        enumNames.push(restrictions[i].alias);
-                        enumValues.push(restrictions[i].value);
-                    }
-                    if (enumNames.length === enumValues.length) {
-                        properties[key].enum = enumValues;
-                    }
-                    // If there is a restriction, then convert the field to a select
-                    uiSchema[key] = {
-                        'ui:enumNames': enumNames
-                    };
                 }
             }
         });
+
+        console.log({
+            schema: {
+                type: "object",
+                required,
+                properties
+            },
+            uiSchema
+        })
 
         return {
             schema: {
