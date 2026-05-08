@@ -691,6 +691,7 @@ module.exports = {
                     onSubmit={onSubmit}
                     transformErrors={transformErrors}
                     formData={defaultValues}
+                    experimental_defaultFormStateBehavior={{constAsDefaults: 'skipOneOf'}}
                     focusOnFirstError={false}>
                     <div className="buttons">
                         <button type="submit"
@@ -1088,7 +1089,7 @@ module.exports = {
                     formData={eventFeatureParsed}
                     onSubmit={onSubmit}
                     transformErrors={transformErrors}
-                    experimental_defaultFormStateBehavior={{emptyObjectFields: 'skipDefaults'}}
+                    experimental_defaultFormStateBehavior={{emptyObjectFields: 'skipDefaults', constAsDefaults: 'skipOneOf'}}
                     focusOnFirstError={false}>
                     <div className="buttons">
                         <button type="submit" className="btn btn btn-success mb-2 mt-2 w-100">{__("Submit")}</button>
