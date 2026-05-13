@@ -485,16 +485,16 @@ module.exports = {
 
                 // Properties have priority over default types
                 if (fields[key]?.restriction?.length > 0) {
-                    // Use oneOf with const/title (rjsf v6 idiom) instead of enum + ui:enumNames
-                    // so each option carries its own value/label and the parent schema's type
-                    // (integer/number/string) is preserved.
-                    properties[key].oneOf = fields[key].restriction.map(r => ({
-                        const: r.value,
-                        title: r.alias
-                    }));
-                    // Drop any widget hint set by the type switch above (e.g. textarea) so the
-                    // restricted field renders as a select.
-                    if (uiSchema[key]?.['ui:widget']) {
+                    // Use enum + ui:enumNames rather than oneOf+const. AJV compiles oneOf into a
+                    // deeply nested else-chain (one level per branch) which overflows V8's stack
+                    // on large restriction lists (e.g. ~1000 postnumre).
+                    const restrictions = fields[key].restriction;
+                    properties[key].enum = restrictions.map(r => r.value);
+                    uiSchema[key] = {
+                        ...uiSchema[key],
+                        'ui:enumNames': restrictions.map(r => r.alias),
+                    };
+                    if (uiSchema[key]['ui:widget']) {
                         delete uiSchema[key]['ui:widget'];
                     }
                 }

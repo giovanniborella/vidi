@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [CalVer](https://calver.org/).
 
+## [2026.5.4] - 2026-13-5
+### Fixed
+- Back to use enum + ui:enumNames rather than oneOf+const. AJV compiles oneOf into a
+  deeply nested else-chain (one level per branch) which overflows V8's stack
+  on large restriction lists (e.g. ~1000 postnumre)
+
 ## [2026.5.3] - 2026-13-5
 ### Fixed
 - JSON types are noe strinhgified in the editor.
