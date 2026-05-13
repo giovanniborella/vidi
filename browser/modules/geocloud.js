@@ -1369,7 +1369,7 @@ geocloud = (function () {
             return (this.mapQuestAerial);
         };
         //ol2, ol3 and leaflet
-        this.addOSM = function () {
+        this.addOSM = function (config) {
             switch (MAPLIB) {
                 case "ol2":
                     this.osm = new OpenLayers.Layer.OSM("osm");
@@ -1385,9 +1385,11 @@ geocloud = (function () {
                     this.map.addLayer(this.osm);
                     break;
                 case "leaflet":
+                    console.log(config);
                     this.osm = new L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                         attribution: "&copy; <a target='_blank' rel='noopener' href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
-                        maxZoom: 21,
+                        minZoom: config?.minZoom ?? 1,
+                        maxZoom: config?.maxZoom ?? 21,
                         maxNativeZoom: 18
                     });
                     lControl.addBaseLayer(this.osm, "OSM");
@@ -2052,7 +2054,7 @@ geocloud = (function () {
             var o;
             switch (l) {
                 case "osm":
-                    o = this.addOSM();
+                    o = this.addOSM(config);
                     break;
                 case "mapQuestOSM":
                     o = this.addMapQuestOSM();
