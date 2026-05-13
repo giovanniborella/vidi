@@ -466,6 +466,8 @@ module.exports = {
                             };
                             break;
                         case `text`:
+                        case `json`:
+                        case `jsonb`:
                             uiSchema[key] = {
                                 'ui:widget': 'textarea'
                             };
@@ -498,16 +500,6 @@ module.exports = {
                 }
             }
         });
-
-        console.log({
-            schema: {
-                type: "object",
-                required,
-                properties
-            },
-            uiSchema
-        })
-
         return {
             schema: {
                 type: "object",
@@ -598,7 +590,6 @@ module.exports = {
                     return;
                 }
                 if ((type === "POLYGON" || type === "MULTIPOLYGON") && coordAll(geoJson).length < 4) {
-                    console.log(coordAll(geoJson).length)
                     alert(__("You need to plot at least three points"));
                     return;
                 }
@@ -612,14 +603,6 @@ module.exports = {
                     geoJson.properties[key] = formData.formData[key];
                     if (geoJson.properties[key] === undefined) {
                         geoJson.properties[key] = null;
-                    }
-                    if (fields[key]?.type && (fields[key].type === "bytea" ||
-                            fields[key].type.startsWith("time") ||
-                            fields[key].type.startsWith("time") ||
-                            fields[key].type.startsWith("character") ||
-                            fields[key].type.startsWith("json") ||
-                            fields[key].type.startsWith("text")) &&
-                        geoJson.properties[key] !== null) {
                     }
                 });
 
@@ -978,6 +961,12 @@ module.exports = {
                             eventFeatureCopy.properties[key] = "[" + eventFeatureCopy.properties[key].slice(1, -1) + "]";
                         }
                         break;
+                    case `json`:
+                    case `jsonb`:
+                        if (eventFeatureCopy.properties[key]) {
+                            eventFeatureCopy.properties[key] = JSON.stringify(eventFeatureCopy.properties[key]);
+                        }
+                        break;
                 }
             });
 
@@ -1024,14 +1013,6 @@ module.exports = {
                         if (GeoJSON.properties[key] === undefined) {
                             GeoJSON.properties[key] = null;
                         }
-                        if (fields[key]?.type && (fields[key].type === "bytea" ||
-                                fields[key].type.startsWith("time") ||
-                                fields[key].type.startsWith("time") ||
-                                fields[key].type.startsWith("character") ||
-                                fields[key].type.startsWith("json") ||
-                                fields[key].type.startsWith("text")) &&
-                            GeoJSON.properties[key] !== null) {
-                        }
                     } else {
                         // Remove system fields, which should not be updated by the user
                         delete GeoJSON.properties[key];
@@ -1077,7 +1058,6 @@ module.exports = {
             for (let [key, value] of Object.entries(eventFeatureCopy.properties)) {
                 eventFeatureParsed[key] = value;
             }
-            console.log('Editor: eventFeatureParsed', eventFeatureParsed);
             editorFormRoot.render(
                 <Form
                     key={Date.now()}
