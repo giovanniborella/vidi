@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [CalVer](https://calver.org/).
 
+## [2026.5.5] - 2026-15-5
+### Added
+- New config options `minZoom` and `maxZoom`. Minimum and maximum zoom level of the map. If not set, the map will use the min/max zoom level of the active baselayer.
+
 ## [2026.5.4] - 2026-13-5
 ### Fixed
 - Back to use enum + ui:enumNames rather than oneOf+const. AJV compiles oneOf into a
