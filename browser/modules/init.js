@@ -105,6 +105,8 @@ module.exports = {
             loadCheckingInterval: 15000,
             mode: 0,
             layerTreeFilterPlaceholder: null,
+            minZoom: null,
+            maxZoom: null,
         };
         // Set default for unset props
         for (let prop in defaults) {
